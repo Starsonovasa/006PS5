@@ -64,6 +64,7 @@ def dijkstra(n, edges, source, target=None):
     shortestLengthFromSource = {}
     parent = {}
     outputList = []
+    shortestPath = []
     
     for vertex in edges.keys():
         if vertex != source:
@@ -83,6 +84,15 @@ def dijkstra(n, edges, source, target=None):
         current = priQueue.pop()
         currentVertex = current[0]
         determinedVertices.add(currentVertex)
+        
+        if currentVertex == target:
+            pathVertex = target
+            while (pathVertex != None):
+                shortestPath.append(pathVertex)
+                pathVertex = parent[pathVertex]
+                    
+            shortestPath.reverse()
+            return (shortestPath, shortestLengthFromSource[target])
         for vertexAndWeight in edges[currentVertex]:
             
             vertex = vertexAndWeight[0]
@@ -93,7 +103,7 @@ def dijkstra(n, edges, source, target=None):
                     shortestLengthFromSource[vertex] = shortestLengthFromSource[currentVertex] + weight
                     priQueue.add(vertex, shortestLengthFromSource[vertex])
                     parent[vertex] = currentVertex
-        
+                                
         outputList.append((currentVertex, shortestLengthFromSource[currentVertex], parent[currentVertex]))
     return outputList
 
