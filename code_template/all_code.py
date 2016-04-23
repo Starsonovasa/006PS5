@@ -59,7 +59,43 @@ class PriorityQueue:
 # then return a list of tuples as described in part (a). If target is not None,
 # then return a path as a list of states as described in part (b).
 def dijkstra(n, edges, source, target=None):
-    pass
+    determinedVertices = set()
+    priQueue = PriorityQueue()
+    shortestLengthFromSource = {}
+    parent = {}
+    outputList = []
+    
+    for vertex in edges.keys():
+        if vertex != source:
+            shortestLengthFromSource[vertex] = float("inf")
+        else:
+            shortestLengthFromSource[vertex] = 0
+        priQueue.add(vertex, shortestLengthFromSource[vertex])    
+        parent[vertex] = None
+        
+    #Double counting the source, but for now this is just a safety check
+    #Once I debug through this, I'll determine whether it's needed or whether
+    #I need to remove the if statement above    
+    shortestLengthFromSource[source] = 0
+    priQueue.add(source, 0)
+    
+    while not(priQueue.empty()):
+        current = priQueue.pop()
+        currentVertex = current[0]
+        determinedVertices.add(currentVertex)
+        for vertexAndWeight in edges[currentVertex]:
+            
+            vertex = vertexAndWeight[0]
+            weight = vertexAndWeight[1]
+            if vertex not in determinedVertices:
+                #Relax the edges
+                if shortestLengthFromSource[vertex] > shortestLengthFromSource[currentVertex] + weight:
+                    shortestLengthFromSource[vertex] = shortestLengthFromSource[currentVertex] + weight
+                    priQueue.add(vertex, shortestLengthFromSource[vertex])
+                    parent[vertex] = currentVertex
+        
+        outputList.append((currentVertex, shortestLengthFromSource[currentVertex], parent[currentVertex]))
+    return outputList
 
 # TODO: Implement part (c).
 def bidirectional(n, edges, source, target):
